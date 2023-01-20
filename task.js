@@ -379,7 +379,7 @@ const devices = [
       certificateId: [],
       attributes: [
         {
-          Createdate: "2021-05-23_11:04",
+          Createdate: "2022-05-23_11:04",
         },
       ],
       __v: 0,
@@ -394,6 +394,7 @@ const devices = [
     isPacked: false,
     isTested: false,
     pcbaPassed: false,
+    g: "2",
   },
   {
     orderName: "VLS103_HCA_V3",
@@ -418,12 +419,12 @@ const devices = [
       thingId: "d42f0172-14e8-4d4b-890a-007JH2LY8OURV",
       appId: "5b236954c4fbb64e7ddf36c6",
       thingGroupName: "hnhjjjj",
-      cid: "432",
+      cid: "7",
       Createdate: "2022-05-23T08:03:57.979Z",
       certificateId: [],
       attributes: [
         {
-          Createdate: "2021-05-23_11:03",
+          Createdate: "2022-05-23_11:03",
         },
       ],
       __v: 0,
@@ -438,12 +439,13 @@ const devices = [
     isPacked: false,
     isTested: false,
     pcbaPassed: false,
+    g: "1",
   },
 ];
 const object = {
-  startDate: 1621756920000,
-  endDate: 1624757040000,
-  sortBy: "setupId",
+  startDate: 1653292920000,
+  endDate: 1653293100000,
+  sortBy: "g",
 };
 
 const filterDevise = (arr, obj) => {
@@ -456,13 +458,31 @@ const filterDevise = (arr, obj) => {
         Date.parse(item.Createdate.replace("_", "T")) < obj.endDate
       );
     });
-    if (filtered.length > 0) newArr.push(elem);
+    if (filtered.length > 0) {
+      newArr.push(elem);
+    }
   });
-  if (!obj.sortBy) return "Sort field incorrect";
-  if (typeof obj.sortBy !== "string") return "Field should be a string";
-  newArr.sort((a, b) => {
-    if (obj.sortBy.charAt(0) == "-")
-      return a[obj.sortBy] > b[obj.sortBy] ? 1 : -1;
+
+  if (obj.sortBy.charAt(0) == "-") {
+    newArr.sort((a, b) => (a[obj.sortBy] < b[obj.sortBy] ? 1 : -1));
+  }
+  newArr.sort((a, b) => (a[obj.sortBy] > b[obj.sortBy] ? 1 : -1));
+
+  newArr.forEach((el) => {
+    if (obj.sortBy.charAt(0) == "-") {
+      if (typeof el[obj.sortBy.slice(1)] !== "string") {
+        newArr = "Field should be a string";
+      }
+    } else if (typeof el[obj.sortBy] !== "string") {
+      newArr = "Field should be a string";
+    }
+    if (obj.sortBy.charAt(0) == "-") {
+      if (!(obj.sortBy.slice(1) in el)) {
+        newArr = "Sort field incorrect";
+      }
+    } else if (!(obj.sortBy in el)) {
+      newArr = "Sort field incorrect";
+    }
   });
 
   return newArr;
